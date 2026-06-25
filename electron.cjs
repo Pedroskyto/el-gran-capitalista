@@ -239,7 +239,15 @@ function checkForUpdates() {
   });
 
   autoUpdater.on("update-not-available", () => {});
-  autoUpdater.on("error", () => {});
+  autoUpdater.on("error", (err) => {
+    dialog.showMessageBox(mainWindow, {
+      type: "error",
+      title: "Update Error",
+      message: err.message || "Unknown error",
+      detail: err.stack || "",
+      buttons: ["OK"]
+    });
+  });
 }
 
 // ── IPC ───────────────────────────────────────────────────────────────────────

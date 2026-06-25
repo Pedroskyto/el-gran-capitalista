@@ -1,7 +1,7 @@
 {
   "name": "business-empire",
   "private": true,
-  "version": "1.2.5",
+  "version": "1.2.6",
   "type": "module",
   "main": "electron.cjs",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "electron": "cross-env NODE_ENV=development electron .",
-    "electron:build": "vite build && electron-builder",
+    "electron:build": "vite build && electron-builder --publish always",
     "electron:preview": "vite build && cross-env NODE_ENV=production electron ."
   },
   "dependencies": {
@@ -52,6 +52,7 @@
       "owner": "Pedroskyto",
       "repo": "el-gran-capitalista"
     },
+    "artifactName": "${productName}-Setup-${version}.${ext}",
     "win": {
       "target": [
         {

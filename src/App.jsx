@@ -2147,7 +2147,7 @@ export default function BusinessEmpire() {
     .pill { background:none; border:1px solid #222238; border-radius:20px; color:#7a7a9a; cursor:pointer; padding:5px 14px; font-family:inherit; font-size:12px; transition:all .15s; margin-right:6px; margin-bottom:6px; }
     .pill.active { border-color:#c9a84c; color:#c9a84c; background:#1a1810; }
     .pill:hover { color:#e8e0d0; }
-    .click-btn { position:relative; background:linear-gradient(135deg,#1a1810,#221f12); border:2px solid #c9a84c; border-radius:50%; width:148px; height:148px; cursor:pointer; transition:transform .1s,box-shadow .1s; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 0 40px rgba(201,168,76,.12); }
+    .click-btn { position:relative; background:linear-gradient(135deg,#1a1810,#221f12); border:2px solid #c9a84c; border-radius:50%; width:110px; height:110px; cursor:pointer; transition:transform .1s,box-shadow .1s; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 0 40px rgba(201,168,76,.12); }
     .click-btn:hover { box-shadow:0 0 60px rgba(201,168,76,.28); }
     .click-btn.clicked { transform:scale(.91); box-shadow:0 0 80px rgba(201,168,76,.5); }
     .float-text { position:absolute; font-size:14px; font-weight:600; color:#c9a84c; pointer-events:none; animation:floatUp .9s ease-out forwards; white-space:nowrap; }
@@ -2301,27 +2301,26 @@ export default function BusinessEmpire() {
       <div style={{ display:"flex", flex:1, overflow:"hidden" }}>
 
         {/* LEFT PANEL */}
-        <div style={{ width:"clamp(180px, 18vw, 232px)", borderRight:"1px solid #161628", padding:"12px 10px", display:"flex", flexDirection:"column", alignItems:"center", gap:12, overflowY:"auto" }}>
+        <div style={{ width:"clamp(160px, 14vw, 190px)", borderRight:"1px solid #161628", padding:"8px 8px", display:"flex", flexDirection:"column", alignItems:"center", gap:8, overflowY:"auto" }}>
 
           {/* CEO */}
           {(()=>{ const ceoIdx = CEO_LEVELS.indexOf(ceoLevel); return (
-            <div className="card" style={{ width:"100%", padding:"12px" }}>
+            <div className="card" style={{ width:"100%", padding:"8px" }}>
               {/* Avatar + name + progress */}
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:52, height:52, borderRadius:26, border:"2px solid #c9a84c", overflow:"hidden",
-                  background:"#0a0a12", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, flexShrink:0 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                <div style={{ width:40, height:40, borderRadius:20, border:"2px solid #c9a84c", overflow:"hidden",
+                  background:"#0a0a12", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
                   <img src={"ceo_" + (ceoIdx+1) + ".png"} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}
                     onError={e => { e.target.style.display="none"; e.target.parentNode.textContent="👔"; }} />
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontFamily:"'Playfair Display',serif", fontSize:14, color:"#c9a84c" }}>
+                  <div style={{ fontFamily:"'Playfair Display',serif", fontSize:12, color:"#c9a84c", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
                     {ceoLevel.name[lang]||ceoLevel.name.en}
                   </div>
-                  <div style={{ fontSize:11, color:"#8888aa", marginTop:1 }}>{"×" + ceoLevel.bonus.toFixed(1) + " bonus · Lv " + (ceoIdx+1) + "/10"}</div>
+                  <div style={{ fontSize:10, color:"#8888aa", marginTop:1 }}>{"×" + ceoLevel.bonus.toFixed(1) + " · Lv " + (ceoIdx+1) + "/10"}</div>
                   {nextCeo && (
                     <>
-                      <div className="pb" style={{ marginTop:5 }}><div className="pf" style={{ width:ceoProgress+"%" }} /></div>
-                      <div style={{ fontSize:11, color:"#7878a0", marginTop:3 }}>{"→ " + (nextCeo.name[lang]||nextCeo.name.en) + " · " + fmt(nextCeo.minWealth)}</div>
+                      <div className="pb" style={{ marginTop:3 }}><div className="pf" style={{ width:ceoProgress+"%" }} /></div>
                     </>
                   )}
                 </div>
@@ -2363,17 +2362,17 @@ export default function BusinessEmpire() {
           {/* CLICK */}
           <div style={{ position:"relative" }}>
             <button className={"click-btn" + (clickAnim?" clicked":"")} onClick={handleClick}>
-              <img src="click_btn.png" alt="" style={{ width:144, height:144, objectFit:"cover", borderRadius:"50%", position:"absolute", inset:0, margin:"auto" }} onError={e=>{e.target.style.display="none";}} />
+              <img src="click_btn.png" alt="" style={{ width:106, height:106, objectFit:"cover", borderRadius:"50%", position:"absolute", inset:0, margin:"auto" }} onError={e=>{e.target.style.display="none";}} />
             </button>
             {floats.map(fl => <div key={fl.id} className="float-text" style={{ left:fl.x-20, top:fl.y-10 }}>{"+" + fmt(fl.value)}</div>)}
           </div>
-          <div style={{ textAlign:"center", marginTop:8 }}>
-            <div style={{ fontSize:11, color:"#c9a84c", letterSpacing:2 }}>{t.click}</div>
-            <div style={{ fontSize:12, color:"#9898b8", marginTop:1 }}>{fmt(clickValue)}</div>
+          <div style={{ textAlign:"center", marginTop:4 }}>
+            <div style={{ fontSize:10, color:"#c9a84c", letterSpacing:2 }}>{t.click}</div>
+            <div style={{ fontSize:11, color:"#9898b8", marginTop:1 }}>{fmt(clickValue)}</div>
           </div>
 
           {/* STATS */}
-          <div style={{ width:"100%", fontSize:12 }}>
+          <div style={{ width:"100%", fontSize:11 }}>
             {[
               [t.incomePerSec,     <span className="green">{"+" + fmt(incomePerSec) + "/s"}</span>],
               [t.perClick,         <span className="gold">{fmt(clickValue)}</span>],
@@ -2386,35 +2385,34 @@ export default function BusinessEmpire() {
           </div>
 
           {/* PRESTIGE */}
-          <div style={{ width:"100%", background:"#0d0a1a", border:"1px solid " + (canPrestige?"#8060ff":"#1c1c2e"), borderRadius:8, padding:"12px" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-              {prestige > 0 && <img src={"./prestige_" + prestige + ".png"} alt="" style={{ width:28, height:28, objectFit:"contain", flexShrink:0 }} onError={e => { e.target.src = "./" + (prestige >= 10 ? "prestige_10.png" : prestige >= 5 ? "prestige_5.png" : "prestige_1.png"); }} />}
-              <div style={{ fontSize:11, color:"#9070ff", letterSpacing:2, fontWeight:600 }}>{"✦ " + (t.prestige||"PRESTIGE").toUpperCase() + (prestige > 0 ? " " + prestige : "")}</div>
+          <div style={{ width:"100%", background:"#0d0a1a", border:"1px solid " + (canPrestige?"#8060ff":"#1c1c2e"), borderRadius:8, padding:"8px" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6 }}>
+              {prestige > 0 && <img src={"./prestige_" + prestige + ".png"} alt="" style={{ width:20, height:20, objectFit:"contain", flexShrink:0 }} onError={e => { e.target.src = "./" + (prestige >= 10 ? "prestige_10.png" : prestige >= 5 ? "prestige_5.png" : "prestige_1.png"); }} />}
+              <div style={{ fontSize:10, color:"#9070ff", letterSpacing:1.5, fontWeight:600 }}>{"✦ " + (t.prestige||"PRESTIGE").toUpperCase() + (prestige > 0 ? " " + prestige : "")}</div>
             </div>
             {prestige > 0 && (
-              <div style={{ marginBottom:6 }}>
-                <div style={{ fontSize:11, color:"#c0a0ff" }}>{prestigeTitle}</div>
-                <div style={{ fontSize:11, color:"#6a50aa", marginTop:2 }}>{"×" + getPrestigeIncomeMultiplier(prestige).toFixed(0) + " " + (t.prestigeGlobalIncome||"ingresos globales")}</div>
+              <div style={{ marginBottom:4 }}>
+                <div style={{ fontSize:10, color:"#c0a0ff" }}>{prestigeTitle}</div>
+                <div style={{ fontSize:10, color:"#6a50aa", marginTop:1 }}>{"×" + getPrestigeIncomeMultiplier(prestige).toFixed(0) + " " + (t.prestigeGlobalIncome||"ingresos globales")}</div>
               </div>
             )}
-            <div style={{ fontSize:12, color:"#8888aa", marginBottom:4 }}>
+            <div style={{ fontSize:10, color:"#8888aa", marginBottom:3 }}>
               {canPrestige ? t.prestigeReady : ((t.prestigeNeed||"Need:") + " " + fmt(nextPrestigeReq))}
             </div>
-            <div className="pb" style={{ marginBottom:8 }}>
+            <div className="pb" style={{ marginBottom:6 }}>
               <div className="pf" style={{ width: Math.min(100,(totalEarned/nextPrestigeReq)*100) + "%", background:"linear-gradient(90deg,#6040c0,#9060ff)" }} />
             </div>
-            <div style={{ fontSize:11, color:"#8080a8", marginBottom:6 }}>
-              {(t.prestigeNext||"Next:") + " ×" + getPrestigeIncomeMultiplier(prestige+1).toFixed(0) + " " + (t.prestigeGlobalIncome||"income") + " · " + (t.prestigeStocksKept||"Stocks kept")}
-              {prestige >= 2 && (" · " + (t.prestigeCostBiz||"-20% biz cost"))}
-              {prestige >= 4 && (" · " + (t.prestigeCostMgr||"-50% mgr cost"))}
+            <div style={{ fontSize:10, color:"#8080a8", marginBottom:5 }}>
+              {"×" + getPrestigeIncomeMultiplier(prestige+1).toFixed(0) + " · " + (t.prestigeStocksKept||"Stocks kept")}
+              {prestige >= 2 && " · -20% cost"}
             </div>
             {canPrestige && (
-              <button onClick={handlePrestige} style={{ width:"100%", background:"linear-gradient(135deg,#1a0a3a,#2a1060)", border:"1px solid #8060ff", borderRadius:6, color:"#c0a0ff", padding:"8px", cursor:"pointer", fontFamily:"inherit", fontSize:11, letterSpacing:1 }}>
+              <button onClick={handlePrestige} style={{ width:"100%", background:"linear-gradient(135deg,#1a0a3a,#2a1060)", border:"1px solid #8060ff", borderRadius:6, color:"#c0a0ff", padding:"6px", cursor:"pointer", fontFamily:"inherit", fontSize:10, letterSpacing:1 }}>
                 {"✦ " + t.prestigeReset}
               </button>
             )}
             {!canPrestige && prestige === 0 && (
-              <div style={{ fontSize:11, color:"#7070a0", textAlign:"center" }}>{(t.prestigeUnlock||"Reach") + " " + fmt(nextPrestigeReq) + " " + (t.prestigeUnlockSuffix||"to unlock")}</div>
+              <div style={{ fontSize:10, color:"#7070a0", textAlign:"center" }}>{fmt(nextPrestigeReq) + " " + (t.prestigeUnlockSuffix||"to unlock")}</div>
             )}
           </div>
         </div>

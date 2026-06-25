@@ -19,65 +19,110 @@
       justify-content: center;
       position: relative;
     }
-    /* Grid lines */
+
+    /* Fondo con gradiente radial */
+    .bg-glow {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 30% 30%, rgba(120,80,20,0.04) 0%, transparent 60%);
+    }
+
+    /* Líneas de grid sutiles */
     .grid {
       position: absolute;
       inset: 0;
-      opacity: 0.07;
+      opacity: 0.05;
       background-image:
         linear-gradient(#c9901a 1px, transparent 1px),
         linear-gradient(90deg, #c9901a 1px, transparent 1px);
       background-size: 60px 60px;
     }
-    /* Corner brackets */
+
+    /* Esquinas decorativas */
     .corner {
       position: absolute;
-      width: 28px; height: 28px;
+      width: 32px; height: 32px;
       border-color: #c9901a;
       border-style: solid;
-      opacity: 0.7;
+      opacity: 0.5;
     }
     .tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
     .tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
     .bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
     .br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
 
-    .icon {
-      margin-bottom: 24px;
-      animation: pulse 2s ease-in-out infinite;
+    /* Monedas decorativas flotantes */
+    .coin {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0;
+      animation: floatCoin 3s ease-in-out forwards;
     }
-    .icon img {
-      width: 300px;
-      height: auto;
-      max-height: 180px;
-      object-fit: contain;
-      border-radius: 12px;
+    .coin:nth-child(1) { left: 15%; top: 20%; animation-delay: 0.2s; font-size: 20px; }
+    .coin:nth-child(2) { right: 18%; top: 25%; animation-delay: 0.5s; font-size: 24px; }
+    .coin:nth-child(3) { left: 22%; bottom: 30%; animation-delay: 0.8s; font-size: 16px; }
+    .coin:nth-child(4) { right: 22%; bottom: 28%; animation-delay: 0.3s; font-size: 18px; }
+    .coin:nth-child(5) { left: 40%; top: 15%; animation-delay: 1s; font-size: 14px; }
+    @keyframes floatCoin {
+      0%   { opacity: 0; transform: translateY(10px); }
+      30%  { opacity: 0.3; }
+      70%  { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-20px); }
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.05); opacity: 0.85; }
+
+    /* Separador decorativo */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
+    .divider-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9901a);
+    }
+    .divider-line.right {
+      background: linear-gradient(90deg, #c9901a, transparent);
+    }
+    .divider-diamond {
+      width: 6px; height: 6px;
+      background: #c9901a;
+      transform: rotate(45deg);
+      opacity: 0.8;
+    }
+
     .title {
-      font-size: 32px;
+      font-size: 36px;
       color: #c9a84c;
-      letter-spacing: 4px;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 40px rgba(201,168,76,0.3);
+      animation: fadeIn 0.8s ease forwards;
     }
     .subtitle {
       font-size: 11px;
       color: #5a4a30;
-      letter-spacing: 3px;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      margin-bottom: 48px;
+      margin-bottom: 40px;
+      animation: fadeIn 0.8s ease 0.2s both;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .bar-track {
-      width: 220px;
+      width: 200px;
       height: 2px;
       background: #1a1530;
       border-radius: 2px;
       overflow: hidden;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .bar-fill {
       height: 100%;
@@ -96,13 +141,13 @@
       font-family: Arial, sans-serif;
       font-size: 10px;
       color: #3a3060;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
     .version {
       position: absolute;
-      bottom: 24px;
-      right: 28px;
+      bottom: 22px;
+      right: 26px;
       font-family: Arial, sans-serif;
       font-size: 10px;
       color: #2a2040;
@@ -112,24 +157,34 @@
 </head>
 <body>
   <div class="container">
+    <div class="bg-glow"></div>
     <div class="grid"></div>
     <div class="corner tl"></div>
     <div class="corner tr"></div>
     <div class="corner bl"></div>
     <div class="corner br"></div>
 
-    <div class="icon">
-      <img src="./public/splash.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <span style="display:none;font-size:64px">💼</span>
+    <span class="coin">💰</span>
+    <span class="coin">🪙</span>
+    <span class="coin">💎</span>
+    <span class="coin">💰</span>
+    <span class="coin">🪙</span>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-diamond"></div>
+      <div class="divider-line right"></div>
     </div>
+
     <div class="title">El Gran Capitalista</div>
     <div class="subtitle">Build your empire</div>
+
     <div class="bar-track">
       <div class="bar-fill"></div>
     </div>
     <div class="loading-text">Loading...</div>
 
-    <div class="version" id="ver">v1.2.5</div>
+    <div class="version">v1.2.6</div>
   </div>
 </body>
 </html>
