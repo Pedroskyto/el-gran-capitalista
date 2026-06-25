@@ -2170,7 +2170,7 @@ export default function BusinessEmpire() {
     .card { background:#12121e; border:1px solid #222238; border-radius:8px; transition:border-color .15s,background .15s; }
     .card.hl:hover { border-color:#c9a84c; background:#16162a; cursor:pointer; }
     .card.dis { opacity:.4; cursor:not-allowed!important; }
-    .tab-btn { background:none; border:none; color:#9090b8; cursor:pointer; padding:7px 9px; font-family:inherit; font-size:10.5px; letter-spacing:0.5px; text-transform:uppercase; border-bottom:2px solid transparent; transition:color .15s,border-color .15s; white-space:nowrap; }
+    .tab-btn { background:none; border:none; color:#9090b8; cursor:pointer; padding:9px 12px; font-family:inherit; font-size:13px; letter-spacing:0.5px; text-transform:uppercase; border-bottom:2px solid transparent; transition:color .15s,border-color .15s; white-space:nowrap; }
     .tab-btn.active { color:#c9a84c; border-bottom-color:#c9a84c; }
     .tab-btn:hover:not(.active) { color:#d0c8bc; }
     .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:8px; }
@@ -2288,7 +2288,7 @@ export default function BusinessEmpire() {
 
   // ── MAIN GAME ──
   return (
-    <div style={{ fontFamily:"'Inter',sans-serif", background:"#0c0c1a", color:"#e8e0d0", minHeight:"100vh", display:"flex", flexDirection:"column", userSelect:"none", zoom: uiScale }}>
+    <div style={{ fontFamily:"'Inter',sans-serif", background:"#0c0c1a", color:"#e8e0d0", display:"flex", flexDirection:"column", userSelect:"none", width:`${100/uiScale}vw`, height:`${100/uiScale}vh`, transform:`scale(${uiScale})`, transformOrigin:"top left", overflow:"hidden" }}>
       <style>{css}</style>
       {notification && <div className="notif">{notification}</div>}
       {showFPS && <div style={{ position:"fixed", top:8, left:"50%", transform:"translateX(-50%)", background:"#0a0a14", border:"1px solid #1c1c2e", borderRadius:4, padding:"2px 8px", fontSize:11, color:"#5aab6a", zIndex:99 }}>{fps} FPS</div>}
@@ -2332,7 +2332,7 @@ export default function BusinessEmpire() {
       <div style={{ display:"flex", flex:1, overflow:"hidden" }}>
 
         {/* LEFT PANEL */}
-        <div style={{ width:"clamp(160px, 14vw, 190px)", borderRight:"1px solid #161628", padding:"8px 8px", display:"flex", flexDirection:"column", alignItems:"center", gap:8, overflowY:"auto" }}>
+        <div style={{ width:"clamp(150px, 11vw, 175px)", borderRight:"1px solid #161628", padding:"8px 6px", display:"flex", flexDirection:"column", alignItems:"center", gap:8, overflowY:"auto" }}>
 
           {/* CEO */}
           {(()=>{ const ceoIdx = CEO_LEVELS.indexOf(ceoLevel); return (
