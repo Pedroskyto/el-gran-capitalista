@@ -5,31 +5,31 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      width: 100%; height: 100%;
+      width: 580px; height: 340px;
       background: #06050f;
       overflow: hidden;
       font-family: 'Georgia', serif;
       user-select: none;
     }
     .container {
-      width: 100%; height: 100%;
+      position: fixed;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
+      background: #06050f;
     }
 
-    /* Fondo con gradiente radial */
+    /* Gradiente sutil */
     .bg-glow {
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 30% 30%, rgba(120,80,20,0.04) 0%, transparent 60%);
+      background: radial-gradient(ellipse 70% 60% at 50% 55%, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    /* Líneas de grid sutiles */
+    /* Grid sutil */
     .grid {
       position: absolute;
       inset: 0;
@@ -37,120 +37,93 @@
       background-image:
         linear-gradient(#c9901a 1px, transparent 1px),
         linear-gradient(90deg, #c9901a 1px, transparent 1px);
-      background-size: 60px 60px;
+      background-size: 50px 50px;
+      pointer-events: none;
     }
 
-    /* Esquinas decorativas */
+    /* Esquinas */
     .corner {
       position: absolute;
-      width: 32px; height: 32px;
+      width: 28px; height: 28px;
       border-color: #c9901a;
       border-style: solid;
-      opacity: 0.5;
+      opacity: 0.45;
     }
-    .tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
-    .tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
-    .bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
-    .br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+    .tl { top: 18px; left: 18px; border-width: 2px 0 0 2px; }
+    .tr { top: 18px; right: 18px; border-width: 2px 2px 0 0; }
+    .bl { bottom: 18px; left: 18px; border-width: 0 0 2px 2px; }
+    .br { bottom: 18px; right: 18px; border-width: 0 2px 2px 0; }
 
-    /* Monedas decorativas flotantes */
-    .coin {
-      position: absolute;
-      font-size: 28px;
-      opacity: 0;
-      animation: floatCoin 3s ease-in-out forwards;
-    }
-    .coin:nth-child(1) { left: 15%; top: 20%; animation-delay: 0.2s; font-size: 20px; }
-    .coin:nth-child(2) { right: 18%; top: 25%; animation-delay: 0.5s; font-size: 24px; }
-    .coin:nth-child(3) { left: 22%; bottom: 30%; animation-delay: 0.8s; font-size: 16px; }
-    .coin:nth-child(4) { right: 22%; bottom: 28%; animation-delay: 0.3s; font-size: 18px; }
-    .coin:nth-child(5) { left: 40%; top: 15%; animation-delay: 1s; font-size: 14px; }
-    @keyframes floatCoin {
-      0%   { opacity: 0; transform: translateY(10px); }
-      30%  { opacity: 0.3; }
-      70%  { opacity: 0.2; }
-      100% { opacity: 0; transform: translateY(-20px); }
-    }
-
-    /* Separador decorativo */
-    .divider {
+    /* Separador */
+    .sep {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 12px;
     }
-    .divider-line {
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #c9901a);
-    }
-    .divider-line.right {
-      background: linear-gradient(90deg, #c9901a, transparent);
-    }
-    .divider-diamond {
-      width: 6px; height: 6px;
-      background: #c9901a;
-      transform: rotate(45deg);
-      opacity: 0.8;
-    }
+    .sep-line { width: 70px; height: 1px; }
+    .sep-line.l { background: linear-gradient(90deg, transparent, #c9901a); }
+    .sep-line.r { background: linear-gradient(90deg, #c9901a, transparent); }
+    .sep-diamond { width: 5px; height: 5px; background: #c9901a; transform: rotate(45deg); }
 
     .title {
-      font-size: 36px;
+      font-size: 30px;
       color: #c9a84c;
-      letter-spacing: 5px;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      margin-bottom: 6px;
-      text-shadow: 0 0 40px rgba(201,168,76,0.3);
-      animation: fadeIn 0.8s ease forwards;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 0 30px rgba(201,168,76,0.25);
+      animation: fadeUp 0.7s ease forwards;
     }
     .subtitle {
-      font-size: 11px;
-      color: #5a4a30;
+      font-size: 10px;
+      color: #4a3a24;
       letter-spacing: 5px;
       text-transform: uppercase;
-      margin-bottom: 40px;
-      animation: fadeIn 0.8s ease 0.2s both;
+      margin-top: 6px;
+      margin-bottom: 36px;
+      animation: fadeUp 0.7s ease 0.15s both;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(8px); }
+      to   { opacity:1; transform:translateY(0); }
     }
 
-    .bar-track {
+    .bar-wrap {
       width: 200px;
       height: 2px;
-      background: #1a1530;
+      background: #181530;
       border-radius: 2px;
       overflow: hidden;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, #8a5a10, #c9901a, #f5c842);
-      border-radius: 2px;
+      background: linear-gradient(90deg, #7a4e0e, #c9901a, #f0c040);
       animation: load 1.8s ease-in-out forwards;
     }
     @keyframes load {
-      0%   { width: 0%; }
-      30%  { width: 35%; }
-      60%  { width: 65%; }
-      85%  { width: 88%; }
-      100% { width: 100%; }
+      0%  { width:0% }
+      30% { width:35% }
+      60% { width:65% }
+      85% { width:88% }
+      100%{ width:100% }
     }
-    .loading-text {
+    .loading {
       font-family: Arial, sans-serif;
-      font-size: 10px;
-      color: #3a3060;
+      font-size: 9px;
+      color: #302850;
       letter-spacing: 3px;
       text-transform: uppercase;
     }
     .version {
       position: absolute;
-      bottom: 22px;
-      right: 26px;
+      bottom: 20px;
+      right: 22px;
       font-family: Arial, sans-serif;
-      font-size: 10px;
-      color: #2a2040;
+      font-size: 9px;
+      color: #201c38;
       letter-spacing: 1px;
     }
   </style>
@@ -164,27 +137,21 @@
     <div class="corner bl"></div>
     <div class="corner br"></div>
 
-    <span class="coin">💰</span>
-    <span class="coin">🪙</span>
-    <span class="coin">💎</span>
-    <span class="coin">💰</span>
-    <span class="coin">🪙</span>
-
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line right"></div>
+    <div class="sep">
+      <div class="sep-line l"></div>
+      <div class="sep-diamond"></div>
+      <div class="sep-line r"></div>
     </div>
 
     <div class="title">El Gran Capitalista</div>
     <div class="subtitle">Build your empire</div>
 
-    <div class="bar-track">
+    <div class="bar-wrap">
       <div class="bar-fill"></div>
     </div>
-    <div class="loading-text">Loading...</div>
+    <div class="loading">Loading...</div>
 
-    <div class="version">v1.2.6</div>
+    <div class="version">v1.2.7</div>
   </div>
 </body>
 </html>

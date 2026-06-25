@@ -4189,13 +4189,24 @@ export default function BusinessEmpire() {
             </div>
 
             {/* UI Scale */}
-            <div className="opt-row">
-              <span style={{ fontSize:13 }}>{t.optUiScale||"UI Scale"}</span>
-              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                <input type="range" className="slider" min="0.8" max="1.3" step="0.05"
-                  value={uiScale} onChange={e => setUiScale(parseFloat(e.target.value))} />
-                <span style={{ fontSize:12, color:"#c9a84c", width:30 }}>{Math.round(uiScale*100)}%</span>
+            <div className="opt-row" style={{ flexDirection:"column", alignItems:"flex-start", gap:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", width:"100%" }}>
+                <span style={{ fontSize:13 }}>{t.optUiScale||"UI Scale"}</span>
+                <span style={{ fontSize:13, color:"#c9a84c", fontWeight:700 }}>{Math.round(uiScale*100)}%</span>
               </div>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                {[0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0].map(v => (
+                  <button key={v} onClick={() => setUiScale(v)}
+                    style={{ padding:"4px 10px", borderRadius:6, border:"1px solid " + (uiScale===v?"#c9a84c":"#2a2a40"),
+                      background: uiScale===v ? "#1a180a" : "transparent",
+                      color: uiScale===v ? "#c9a84c" : "#6060a0",
+                      cursor:"pointer", fontFamily:"inherit", fontSize:11, fontWeight: uiScale===v?700:400 }}>
+                    {Math.round(v*100)}%
+                  </button>
+                ))}
+              </div>
+              <input type="range" className="slider" min="0.5" max="2.0" step="0.05" style={{ width:"100%" }}
+                value={uiScale} onChange={e => setUiScale(parseFloat(e.target.value))} />
             </div>
 
             {/* FPS */}

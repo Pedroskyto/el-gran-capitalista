@@ -21,8 +21,8 @@ let updateWindow = null;
 
 function createSplash() {
   splashWindow = new BrowserWindow({
-    width: 480,
-    height: 300,
+    width: 580,
+    height: 340,
     frame: false,
     transparent: false,
     resizable: false,
