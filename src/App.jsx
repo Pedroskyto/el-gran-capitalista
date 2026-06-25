@@ -2001,28 +2001,54 @@ export default function BusinessEmpire() {
   };
 
   // Auto-refresh del leaderboard cada 60 segundos (ref pattern para evitar stale closures)
-  const _lbRefresh = useRef(null);
-  _lbRefresh.current = { fetchGlobal: fetchGlobalLeaderboard, fetchRegional: fetchRegionalLeaderboard };
-  // Auto-refresh leaderboard cada minuto (siempre, sin depender de si se cargó antes)
+  const [lbLastUpdate, setLbLastUpdate] = useState(null); // timestamp última actualización
+  const playerRegionRef = useRef(playerRegion);
+  playerRegionRef.current = playerRegion;
+
+  // Auto-refresh ROBUSTO: fetch directo en el interval, sin ref pattern de funciones
   useEffect(() => {
-    const id = setInterval(() => {
-      const r = _lbRefresh.current;
-      r.fetchGlobal();
-      r.fetchRegional();
-    }, 60000);
+    const doFetch = async () => {
+      // Global
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/leaderboard?select=player_name,region,score,prestige,created_at,device_id&order=score.desc&limit=100`,
+          { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setGlobalLeaderboard(Array.isArray(data) ? data : []);
+          setGlobalLoaded(true);
+        }
+      } catch(e) {}
+      // Regional
+      const region = playerRegionRef.current;
+      if (region) {
+        try {
+          const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/leaderboard?select=player_name,region,score,prestige,created_at,device_id&order=score.desc&limit=100&region=eq.${encodeURIComponent(region)}`,
+            { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } }
+          );
+          const data = res.ok ? await res.json() : [];
+          setRegionalLeaderboard(Array.isArray(data) ? data : []);
+          setRegionalLoaded(true);
+        } catch(e) {}
+      }
+      setLbLastUpdate(Date.now());
+    };
+
+    const id = setInterval(doFetch, 60000);
     return () => clearInterval(id);
   }, []);
 
-  // Push ranking a Supabase cada 5 minutos automáticamente
-  const _rankingPush = useRef(null);
-  _rankingPush.current = { pushScore: pushScoreToSupabase, playerName, playerRegion };
+  // Push ranking a Supabase cada 5 minutos
+  const playerNameRef = useRef(playerName);
+  playerNameRef.current = playerName;
   useEffect(() => {
     const id = setInterval(() => {
-      const r = _rankingPush.current;
-      if (!r.playerName) return;
+      if (!playerNameRef.current || !playerRegionRef.current) return;
       const score = Math.floor(totalEarnedRef.current * (1 + prestigeRef.current * 0.5));
-      r.pushScore({ name: r.playerName, region: r.playerRegion, score, money: totalEarnedRef.current, prestige: prestigeRef.current, date: new Date().toLocaleDateString() });
-    }, 300000); // cada 5 minutos
+      pushScoreToSupabase({ name: playerNameRef.current, region: playerRegionRef.current, score, money: totalEarnedRef.current, prestige: prestigeRef.current, date: new Date().toLocaleDateString() });
+    }, 300000);
     return () => clearInterval(id);
   }, []);
 
@@ -4070,7 +4096,7 @@ export default function BusinessEmpire() {
                         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
                           <div style={{ fontSize:11, color:"#4050a0" }}>
                             {list.length} {lang==="es"?"jugadores":lang==="fr"?"joueurs":lang==="de"?"Spieler":lang==="pt"?"jogadores":lang==="ru"?"игроков":"players"}
-                            {" · Score = Dinero × (1 + Prestige × 0.5)"}
+                            {lbLastUpdate && <span style={{ marginLeft:8, color:"#303570" }}>{"· " + (lang==="es"?"actualizado":"updated") + " " + Math.round((Date.now()-lbLastUpdate)/1000) + "s"}</span>}
                           </div>
                           <button onClick={() => isWorldView ? fetchGlobalLeaderboard() : fetchRegionalLeaderboard()} disabled={loading}
                             style={{ background:"none", border:"1px solid #2a3060", borderRadius:6, color: loading?"#303060":"#5060a0",
