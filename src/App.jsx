@@ -1229,6 +1229,7 @@ export default function BusinessEmpire() {
       return "dev_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 15);
     }
   });
+  const deviceIdRef = useRef(deviceId);
   const [nameInput, setNameInput]       = useState("");
   const [regionInput, setRegionInput]   = useState(REGIONS_UNIQUE[0]);
   const [langInput, setLangInput]       = useState(() => { try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)||"{}"); return d.lang || "en"; } catch(e) { return "en"; } });
@@ -2000,15 +2001,30 @@ export default function BusinessEmpire() {
     setRegionalLoading(false);
   };
 
-  // Auto-refresh del leaderboard cada 60 segundos (ref pattern para evitar stale closures)
-  const [lbLastUpdate, setLbLastUpdate] = useState(null); // timestamp última actualización
+  // Refs para el leaderboard
+  const [lbLastUpdate, setLbLastUpdate] = useState(null);
   const playerRegionRef = useRef(playerRegion);
   playerRegionRef.current = playerRegion;
+  const playerNameRef = useRef(playerName);
+  playerNameRef.current = playerName;
 
-  // Auto-refresh ROBUSTO: fetch directo en el interval, sin ref pattern de funciones
+  // Push + fetch cada 60 segundos. Se ejecuta también al arrancar (sin esperar 60s).
   useEffect(() => {
     const doFetch = async () => {
-      // Global
+      // 1. Subir score del jugador actual
+      const name   = playerNameRef.current;
+      const region = playerRegionRef.current;
+      if (name && region) {
+        const score = Math.floor(totalEarnedRef.current * (1 + prestigeRef.current * 0.5));
+        try {
+          await fetch(`${SUPABASE_URL}/functions/v1/submit-score`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ player_name: name, region, score, money: totalEarnedRef.current, prestige: prestigeRef.current, device_id: deviceIdRef.current })
+          });
+        } catch(e) {}
+      }
+      // 2. Leer ranking global
       try {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/leaderboard?select=player_name,region,score,prestige,created_at,device_id&order=score.desc&limit=100`,
@@ -2020,8 +2036,7 @@ export default function BusinessEmpire() {
           setGlobalLoaded(true);
         }
       } catch(e) {}
-      // Regional
-      const region = playerRegionRef.current;
+      // 3. Leer ranking regional
       if (region) {
         try {
           const res = await fetch(
@@ -2036,19 +2051,9 @@ export default function BusinessEmpire() {
       setLbLastUpdate(Date.now());
     };
 
+    // Ejecutar inmediatamente al arrancar
+    doFetch();
     const id = setInterval(doFetch, 60000);
-    return () => clearInterval(id);
-  }, []);
-
-  // Push ranking a Supabase cada 5 minutos
-  const playerNameRef = useRef(playerName);
-  playerNameRef.current = playerName;
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (!playerNameRef.current || !playerRegionRef.current) return;
-      const score = Math.floor(totalEarnedRef.current * (1 + prestigeRef.current * 0.5));
-      pushScoreToSupabase({ name: playerNameRef.current, region: playerRegionRef.current, score, money: totalEarnedRef.current, prestige: prestigeRef.current, date: new Date().toLocaleDateString() });
-    }, 300000);
     return () => clearInterval(id);
   }, []);
 
@@ -2449,7 +2454,7 @@ export default function BusinessEmpire() {
           {/* TABS */}
           <div style={{ borderBottom:"1px solid #161628", padding:"0 4px", display:"flex", gap:0, overflowX:"auto", scrollbarWidth:"none" }}>
             {[["businesses",t.tabBusinesses],["upgrades",t.tabUpgrades],["managers",t.tabManagers],["missions",t.tabMissions||"Missions"],["stocks",t.tabStocks],["crypto",t.tabCrypto||"Crypto"],["portfolio",t.tabPortfolio],["casino",t.tabCasino||"Casino"],["achievements",t.tabAchievements],["ranking","🏆 Ranking"]].map(([id,label]) => (
-              <button key={id} className={"tab-btn" + (activeTab===id?" active":"")} onClick={() => { setActiveTab(id); if(id==="ranking"){ fetchGlobalLeaderboard(); fetchRegionalLeaderboard(); } }}
+              <button key={id} className={"tab-btn" + (activeTab===id?" active":"")} onClick={() => { setActiveTab(id); if(id==="ranking"){ if(playerNameRef.current && playerRegionRef.current){ const sc=Math.floor(totalEarnedRef.current*(1+prestigeRef.current*0.5)); pushScoreToSupabase({name:playerNameRef.current,region:playerRegionRef.current,score:sc,money:totalEarnedRef.current,prestige:prestigeRef.current,date:new Date().toLocaleDateString()}); } fetchGlobalLeaderboard(); fetchRegionalLeaderboard(); } }}
                 style={{ position:"relative" }}>
                 {label}
                 {id === "missions" && totalClaimable > 0 && (
