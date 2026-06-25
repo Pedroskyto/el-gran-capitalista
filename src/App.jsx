@@ -2002,13 +2002,27 @@ export default function BusinessEmpire() {
 
   // Auto-refresh del leaderboard cada 60 segundos (ref pattern para evitar stale closures)
   const _lbRefresh = useRef(null);
-  _lbRefresh.current = { fetchGlobal: fetchGlobalLeaderboard, fetchRegional: fetchRegionalLeaderboard, gl: globalLoaded, rl: regionalLoaded };
+  _lbRefresh.current = { fetchGlobal: fetchGlobalLeaderboard, fetchRegional: fetchRegionalLeaderboard };
+  // Auto-refresh leaderboard cada minuto (siempre, sin depender de si se cargó antes)
   useEffect(() => {
     const id = setInterval(() => {
       const r = _lbRefresh.current;
-      if (r.gl) r.fetchGlobal();
-      if (r.rl) r.fetchRegional();
+      r.fetchGlobal();
+      r.fetchRegional();
     }, 60000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Push ranking a Supabase cada 5 minutos automáticamente
+  const _rankingPush = useRef(null);
+  _rankingPush.current = { pushScore: pushScoreToSupabase, playerName, playerRegion };
+  useEffect(() => {
+    const id = setInterval(() => {
+      const r = _rankingPush.current;
+      if (!r.playerName) return;
+      const score = Math.floor(totalEarnedRef.current * (1 + prestigeRef.current * 0.5));
+      r.pushScore({ name: r.playerName, region: r.playerRegion, score, money: totalEarnedRef.current, prestige: prestigeRef.current, date: new Date().toLocaleDateString() });
+    }, 300000); // cada 5 minutos
     return () => clearInterval(id);
   }, []);
 
@@ -2099,8 +2113,10 @@ export default function BusinessEmpire() {
     return progress >= m.target;
   }).length;
   const claimableChains   = CHAIN_MISSIONS.filter(chain => {
-    const step = chain.steps[chainStep[chain.id] || 0];
-    return step && step.check(missionState);
+    const curStep = chainStep[chain.id] || 0;
+    if (curStep >= chain.steps.length) return false;
+    const step = chain.steps[curStep];
+    return step && step.check(missionState) >= step.target;
   }).length;
   const totalClaimable = claimableProgress + claimableDaily + claimableChains;
 
@@ -2126,6 +2142,8 @@ export default function BusinessEmpire() {
     .tab-btn { background:none; border:none; color:#9090b8; cursor:pointer; padding:7px 9px; font-family:inherit; font-size:10.5px; letter-spacing:0.5px; text-transform:uppercase; border-bottom:2px solid transparent; transition:color .15s,border-color .15s; white-space:nowrap; }
     .tab-btn.active { color:#c9a84c; border-bottom-color:#c9a84c; }
     .tab-btn:hover:not(.active) { color:#d0c8bc; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:8px; }
+    .card-grid-sm { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:8px; }
     .pill { background:none; border:1px solid #222238; border-radius:20px; color:#7a7a9a; cursor:pointer; padding:5px 14px; font-family:inherit; font-size:12px; transition:all .15s; margin-right:6px; margin-bottom:6px; }
     .pill.active { border-color:#c9a84c; color:#c9a84c; background:#1a1810; }
     .pill:hover { color:#e8e0d0; }
@@ -2448,6 +2466,7 @@ export default function BusinessEmpire() {
                 </div>
 
                 {/* Business cards */}
+                <div className="card-grid">
                 {allBusinesses.filter(b => b.category === bizCatTab).map(biz => {
                   const count       = owned[biz.id] || 0;
                   const mgrLvl      = managers[biz.id] || 0;
@@ -2519,6 +2538,7 @@ export default function BusinessEmpire() {
                     </div>
                   );
                 })}
+                </div>
               </div>
             )}
 
@@ -2526,11 +2546,12 @@ export default function BusinessEmpire() {
             {activeTab === "upgrades" && (
               <div>
                 <div className="dim" style={{ marginBottom:12, letterSpacing:1.5 }}>{t.upgAvailable}</div>
+                <div className="card-grid">
                 {upgrades.map(upg => {
                   const canAfford = money >= upg.cost;
                   return (
                     <div key={upg.id} className={"card" + (upg.bought?"":" hl")}
-                      style={{ padding:"10px 13px", marginBottom:7, cursor:upg.bought?"default":"pointer", opacity:upg.bought?1:canAfford?1:0.4, border:upg.bought?"1px solid #1a3a1a":"1px solid #1c1c2e", background:upg.bought?"#0c180c":"#10101a" }}
+                      style={{ padding:"10px 13px", cursor:upg.bought?"default":"pointer", opacity:upg.bought?1:canAfford?1:0.4, border:upg.bought?"1px solid #1a3a1a":"1px solid #1c1c2e", background:upg.bought?"#0c180c":"#10101a" }}
                       onClick={() => !upg.bought && buyUpgrade(upg)}>
                       <div style={{ display:"flex", justifyContent:"space-between" }}>
                         <span style={{ fontSize:13, color:upg.bought?"#5aab6a":"#e8e0d0" }}>{(upg.bought?"✓ ":"") + (upg.name[lang]||upg.name.en)}</span>
@@ -2540,6 +2561,7 @@ export default function BusinessEmpire() {
                     </div>
                   );
                 })}
+                </div>
               </div>
             )}
 
@@ -2675,7 +2697,7 @@ export default function BusinessEmpire() {
 
                 {/* CHAIN MISSIONS */}
                 {missionTab === "chains" && (
-                  <div>
+                  <div className="card-grid-sm">
                     {CHAIN_MISSIONS.map(chain => {
                       const currentStep = chainStep[chain.id] || 0;
                       const isComplete  = currentStep >= chain.steps.length;
@@ -2742,6 +2764,7 @@ export default function BusinessEmpire() {
                     <button key={cat} className={"pill" + (managerCatTab===cat?" active":"")} onClick={() => setManagerCatTab(cat)}>{label}</button>
                   ))}
                 </div>
+                <div className="card-grid">
                 {allManagers.filter(mgr => {
                   const biz = allBusinesses.find(b => b.id === mgr.bizId);
                   return biz && biz.category === managerCatTab;
@@ -2807,6 +2830,7 @@ export default function BusinessEmpire() {
                     </div>
                   );
                 })}
+                </div>
               </div>
             )}
 
