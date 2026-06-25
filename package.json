@@ -1,0 +1,74 @@
+{
+  "name": "business-empire",
+  "private": true,
+  "version": "1.2.0",
+  "type": "module",
+  "main": "electron.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "electron": "cross-env NODE_ENV=development electron .",
+    "electron:build": "vite build && electron-builder",
+    "electron:preview": "vite build && cross-env NODE_ENV=production electron ."
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "cross-env": "^7.0.3",
+    "electron": "^42.3.0",
+    "electron-builder": "^26.8.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "vite": "^8.0.12"
+  },
+  "build": {
+    "appId": "com.elgrancapitalista.game",
+    "productName": "El Gran Capitalista",
+    "copyright": "Copyright © 2025",
+    "files": [
+      "dist/**/*",
+      "electron.cjs",
+      "preload.cjs",
+      "splash.html",
+      "package.json",
+      "public/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Pedroskyto",
+      "repo": "el-gran-capitalista"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "El Gran Capitalista"
+    }
+  }
+}

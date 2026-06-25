@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #06050f;
+      overflow: hidden;
+      font-family: 'Georgia', serif;
+      user-select: none;
+    }
+    .container {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    /* Grid lines */
+    .grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.07;
+      background-image:
+        linear-gradient(#c9901a 1px, transparent 1px),
+        linear-gradient(90deg, #c9901a 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* Corner brackets */
+    .corner {
+      position: absolute;
+      width: 28px; height: 28px;
+      border-color: #c9901a;
+      border-style: solid;
+      opacity: 0.7;
+    }
+    .tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+    .tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+    .bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+    .br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+    .icon {
+      margin-bottom: 24px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .icon img {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.85; }
+    }
+    .title {
+      font-size: 32px;
+      color: #c9a84c;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: #5a4a30;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+    .bar-track {
+      width: 220px;
+      height: 2px;
+      background: #1a1530;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8a5a10, #c9901a, #f5c842);
+      border-radius: 2px;
+      animation: load 1.8s ease-in-out forwards;
+    }
+    @keyframes load {
+      0%   { width: 0%; }
+      30%  { width: 35%; }
+      60%  { width: 65%; }
+      85%  { width: 88%; }
+      100% { width: 100%; }
+    }
+    .loading-text {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      color: #3a3060;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .version {
+      position: absolute;
+      bottom: 24px;
+      right: 28px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      color: #2a2040;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid"></div>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <div class="icon">
+      <img src="./public/splash.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:64px">💼</span>
+    </div>
+    <div class="title">El Gran Capitalista</div>
+    <div class="subtitle">Build your empire</div>
+    <div class="bar-track">
+      <div class="bar-fill"></div>
+    </div>
+    <div class="loading-text">Loading...</div>
+
+    <div class="version" id="ver">v1.2.0</div>
+  </div>
+</body>
+</html>
