@@ -50,7 +50,8 @@
     "publish": {
       "provider": "github",
       "owner": "Pedroskyto",
-      "repo": "el-gran-capitalista"
+      "repo": "el-gran-capitalista",
+      "releaseType": "release"
     },
     "artifactName": "${productName}-Setup-${version}.${ext}",
     "win": {
